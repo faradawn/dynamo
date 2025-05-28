@@ -6,6 +6,7 @@
 
 import argparse
 import asyncio
+import json
 import logging
 import sys
 from typing import Optional
@@ -16,6 +17,7 @@ from sglang.srt.server_args import ServerArgs
 
 from dynamo.llm import ModelType, register_llm
 from dynamo.runtime import DistributedRuntime, dynamo_worker
+from dynamo.llm.generation_defaults import load_default_sampling_params
 
 # Only used if you run it manually from the command line
 DEFAULT_ENDPOINT = "dyn://dynamo.backend.generate"
@@ -43,37 +45,44 @@ class Config:
 
 
 class RequestHandler:
-    """
-    Request handler for the generate endpoint
-    """
+    """Request handler for the generate endpoint."""
 
-    def __init__(self, engine):
+    def __init__(self, engine, default_sampling_params):
         self.engine_client = engine
+        # Store defaults so we can merge with each request.
+        self.default_sampling_params = default_sampling_params
 
     async def generate(self, request):
-        sampling_params = {}
-        if request["sampling_options"]["temperature"] is not None:
-            sampling_params["temperature"] = request["sampling_options"]["temperature"]
-        sampling_params = {
-            # sglang defaults this to 128
-            "max_new_tokens": request["stop_conditions"]["max_tokens"],
-        }
+        # Start with model defaults.
+        sampling_params = dict(self.default_sampling_params)
+
+        # Merge caller-supplied sampling options (caller wins).
+        for key, value in request["sampling_options"].items():
+            if value is not None:
+                sampling_params[key] = value
+
+        # Translate stop_conditions into sglang-compatible field names.
+        max_tokens = request["stop_conditions"]["max_tokens"]
+        if max_tokens is not None:
+            sampling_params["max_new_tokens"] = max_tokens
+
         num_output_tokens_so_far = 0
         gen = await self.engine_client.async_generate(
             input_ids=request["token_ids"], sampling_params=sampling_params, stream=True
         )
         async for res in gen:
-            # res is a dict
-
-            finish_reason = res["meta_info"]["finish_reason"]
+            finish_reason = res["meta_info"].get("finish_reason")
             if finish_reason:
-                # Don't forward the stop token
+                # Do not forward the stop token
                 out = {"token_ids": [], "finish_reason": finish_reason["type"]}
             else:
                 next_total_toks = len(res["output_ids"])
-                out = {"token_ids": res["output_ids"][num_output_tokens_so_far:]}
+                out = {
+                    "token_ids": res["output_ids"][num_output_tokens_so_far:]
+                }
+                num_output_tokens_so_far = next_total_toks
+
             yield out
-            num_output_tokens_so_far = next_total_toks
 
 
 @dynamo_worker(static=False)
@@ -119,7 +128,8 @@ async def init(runtime: DistributedRuntime, config: Config):
         logging.debug(f"Adding extra engine arguments: {json_map}")
         arg_map = {**arg_map, **json_map}  # json_map gets precedence
 
-    # TODO fetch default SamplingParams from generation_config.json
+    # Fetch default SamplingParams from generation_config.json (if available)
+    default_sampling_params = load_default_sampling_params(config.model_path)
 
     engine_args = ServerArgs(**arg_map)
     engine_client = sglang.Engine(server_args=engine_args)
@@ -134,7 +144,9 @@ async def init(runtime: DistributedRuntime, config: Config):
 
     # the server will gracefully shutdown (i.e., keep opened TCP streams finishes)
     # after the lease is revoked
-    await endpoint.serve_endpoint(RequestHandler(engine_client).generate)
+    await endpoint.serve_endpoint(
+        RequestHandler(engine_client, default_sampling_params).generate
+    )
 
 
 def cmd_line_args():

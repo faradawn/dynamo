@@ -24,6 +24,7 @@ from tensorrt_llm.llmapi.tokenizer import tokenizer_factory
 
 from dynamo.llm import KvMetricsPublisher, ModelType, register_llm
 from dynamo.runtime import DistributedRuntime, dynamo_worker
+from dynamo.llm.generation_defaults import load_default_sampling_params
 
 # Only used if you run it manually from the command line
 DEFAULT_ENDPOINT = "dyn://dynamo.backend.generate"
@@ -191,10 +192,13 @@ async def init(runtime: DistributedRuntime, config: Config):
     logging.debug(f"TRTLLM engine args: {arg_map}")
     engine_args = arg_map
 
-    # Populate default sampling params from the model
+    # Populate default sampling params from generation_config.json (if available)
+    default_dict = load_default_sampling_params(config.model_path)
     tokenizer = tokenizer_factory(arg_map["model"])
-    default_sampling_params = SamplingParams()
+    default_sampling_params = SamplingParams(**default_dict)
+    # Ensure tokenizer specific setup is run so ids like eos/bos are filled in.
     default_sampling_params._setup(tokenizer)
+    # Always stream until stop token or max tokens; clearing 'stop' avoids premature halt.
     default_sampling_params.stop = None
 
     async with get_llm_engine(engine_args) as engine:

@@ -11,6 +11,7 @@
 
 import argparse
 import asyncio
+import json
 import logging
 import os
 import sys
@@ -26,6 +27,7 @@ from vllm.entrypoints.openai.api_server import (
 from vllm.inputs import TokensPrompt
 
 from dynamo.llm import KvMetricsPublisher, ModelType, register_llm
+from dynamo.llm.generation_defaults import load_default_sampling_params
 from dynamo.runtime import DistributedRuntime, dynamo_worker
 
 # Only used if you run it manually from the command line
@@ -194,8 +196,12 @@ async def init(runtime: DistributedRuntime, config: Config):
     )  # Avoid internal HTTP requests
     engine_args = AsyncEngineArgs(**arg_map)
     model_config = engine_args.create_model_config()
-    # Load default sampling params from `generation_config.json`
-    default_sampling_params = model_config.get_diff_sampling_param()
+    # Load default sampling params from generation_config.json (general helper).
+    default_sampling_params = load_default_sampling_params(config.model_path)
+    
+    # Fallback to vLLM specific helper when no defaults were found.
+    if not default_sampling_params:
+        default_sampling_params = model_config.get_diff_sampling_param()
 
     engine_context = build_async_engine_client_from_engine_args(engine_args)
     engine_client = await engine_context.__aenter__()
