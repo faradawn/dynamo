@@ -26,7 +26,7 @@ limitations under the License.
 Before you begin, ensure that you have the following:
 
 * A Google Cloud account with billing enabled.
-* `gcloud` CLI 
+* `gcloud` CLI
 * A Docker Hub account (or compatible registry).
 * Local tooling:
   * Docker Desktop
