@@ -32,7 +32,7 @@ limitations under the License.
 
 Large language models are quickly outgrowing the memory and compute budget of any single GPU. Tensor-parallelism solves the capacity problem by spreading each layer across many GPUs—and sometimes many servers—but it creates a new one: how do you coordinate those shards, route requests, and share KV cache fast enough to feel like one accelerator? This orchestration gap is exactly what NVIDIA Dynamo is built to close.
 
-![Multi Node Nulti GPU](./docs/images/frontpage-gpu-vertical.png)
+![Multi Node Multi-GPU topology](./docs/images/frontpage-gpu-vertical.png)
 
 
 
