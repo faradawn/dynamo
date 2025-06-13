@@ -41,9 +41,7 @@ from argparse import Namespace
 from typing import AsyncIterator, Tuple
 
 from components.worker import SGLangWorker
-from utils.check_worker import check_required_workers
 from utils.protocol import Tokens
-from utils.vllm import RouterType  # RouterType enum is reused across examples
 
 from dynamo.llm import (
     AggregatedMetrics,
@@ -53,6 +51,12 @@ from dynamo.llm import (
 )
 from dynamo.sdk import async_on_start, depends, dynamo_context, endpoint, service
 from dynamo.sdk.lib.config import ServiceConfig
+
+class RouterType:
+    RANDOM = "random"
+    ROUND_ROBIN = "round-robin"
+    KV = "kv"
+    KV_LOAD = "kv-load"
 
 # Type alias for clarity
 WorkerId = str
@@ -133,6 +137,7 @@ class Router:
     @async_on_start
     async def async_init(self):
         """Connect to worker endpoints and initialise ZMQ helpers."""
+        logger.info("=== starting async init")
         self.runtime = dynamo_context["runtime"]
 
         # Client used to fetch current list of worker instance IDs
@@ -145,14 +150,14 @@ class Router:
 
         self.router_type = self.args.router
 
-        # Ensure minimum number of workers are available before serving
-        await check_required_workers(self.workers_client, self.args.min_workers)
 
         kv_listener = self.runtime.namespace("dynamo").component("SGLangWorker")
         await kv_listener.create_service()
 
-        if self.router_type == RouterType.KV:
-            self.indexer = KvIndexer(kv_listener, self.args.block_size)
+        self.indexer = KvIndexer(kv_listener, self.args.block_size)
+
+        logger.info("=== created kvIndexer with block size: %s", self.args.block_size)
+
         self.metrics_aggregator = KvMetricsAggregator(kv_listener)
         logger.info("KV Router initialised (type=%s)", self.router_type)
 
