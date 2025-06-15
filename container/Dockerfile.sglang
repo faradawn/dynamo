@@ -137,7 +137,8 @@ RUN if [ "$ARCH" = "arm64" ]; then \
 # Once either 0.4.6post6 or 0.4.7 is released, we can switch back to using the published version
 # This commit references multiple perf fixes for DP attention and NIXL https://github.com/sgl-project/sglang/pull/6780
 # 6/2(ishan) - moving to ToT for performance purposes
-ARG SGLANG_COMMIT="6376b632eb4daef306b89ede0eabdcb89ddff728"
+# 6/12(faradawn) - this commit fixes ZMQ KV event publisher inside sglang
+ARG SGLANG_COMMIT="777688b8929c877e4e28c2eac208d776abe4c3af"
 RUN --mount=type=cache,target=/root/.cache/uv \
     git clone https://github.com/sgl-project/sglang.git && \
     cd sglang && \
