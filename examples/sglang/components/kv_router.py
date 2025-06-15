@@ -140,7 +140,6 @@ class Router:
     @async_on_start
     async def async_init(self):
         """Connect to worker endpoints and initialise ZMQ helpers."""
-        logger.info("=== starting async init")
         self.runtime = dynamo_context["runtime"]
 
         # Client used to fetch current list of worker instance IDs
@@ -159,10 +158,9 @@ class Router:
 
         self.indexer = KvIndexer(kv_listener, self.args.block_size)
 
-        logger.info("=== created kvIndexer with block size: %s", self.args.block_size)
 
         self.metrics_aggregator = KvMetricsAggregator(kv_listener)
-        logger.info("KV Router initialised (type=%s)", self.router_type)
+        logger.info("=== Router: KV Router initialised (type=%s, block_size=%s)", self.router_type, self.args.block_size)
 
     # ------------------------------------------------------------------
     # Internal helpers
@@ -280,7 +278,8 @@ class Router:
     @endpoint()
     async def generate(self, request: Tokens) -> AsyncIterator[Tuple[WorkerId, float]]:
         """Determine the best worker for the given request tokens."""
-        logger.info("=== Generate called")
+        logger.info("=== Router generate called")
+        logger.info("=== Router got request: %s", request)
         # Pull latest metrics snapshot
         metrics = await self.metrics_aggregator.get_metrics()
 

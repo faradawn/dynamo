@@ -152,6 +152,7 @@ class SGLangWorker:
 
     @endpoint()
     async def generate(self, request: PreprocessedRequest):
+        logger.info(f"=== inside worker: generate called with request: {request}")
         # TODO: maintain a mapping from SGLang's Ouput struct to LLMEngineOuput
         sampling_params = self._build_sampling_params(request)
 
@@ -185,6 +186,7 @@ class SGLangWorker:
 
             await prefill_task
         else:
+            logger.info(f"=== inside worker: aggregated mode, generate, request {request}")
             g = await self.engine.async_generate(
                 input_ids=request.token_ids,
                 sampling_params=sampling_params,

@@ -8,7 +8,7 @@ Common:
 
 Frontend:
   served_model_name: deepseek-ai/DeepSeek-R1-Distill-Llama-8B
-  endpoint: dynamo.Router.generate
+  endpoint: dynamo.Frontend.chat/completions
   port: 1234
 
 Router:
