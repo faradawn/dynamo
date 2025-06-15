@@ -95,9 +95,9 @@ class SGLangWorker:
             # publisher can expose its own endpoint/statistics.
             component_ref = runtime.namespace(comp_ns).component(comp_name)
 
-            # Derive KV block size from engine args, falling back to 16
+            # Derive KV block size from engine args, falling back to 64
             kv_block_size = getattr(
-                self.engine_args, "page_size", getattr(self.engine_args, "block_size", 16)
+                self.engine_args, "page_size", getattr(self.engine_args, "block_size", 64)
             )
 
             zmq_config = ZmqKvEventPublisherConfig(

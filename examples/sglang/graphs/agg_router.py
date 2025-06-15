@@ -13,8 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import logging
+
 from components.frontend import Frontend
 from components.kv_router import Router
 from components.worker import SGLangWorker
+
+logger = logging.getLogger(__name__)
+logger.info("=== faradawn Starting agg_router graph")
 
 Frontend.link(Router).link(SGLangWorker)

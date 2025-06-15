@@ -62,6 +62,7 @@ class Frontend:
     def __init__(self):
         """Initialize Frontend service with HTTP server and model configuration."""
         frontend_config = FrontendConfig(**ServiceConfig.get_parsed_config("Frontend"))
+        logger.info("=== Frontend config: %s", frontend_config)
         self.frontend_config = frontend_config
         self.process = None
 
@@ -70,7 +71,7 @@ class Frontend:
     def start_ingress_and_processor(self):
         """Starting dynamo-run based ingress and processor"""
         logger.info(
-            f"Starting HTTP server and processor on port {self.frontend_config.port}"
+            f"===Starting HTTP server and processor on port {self.frontend_config.port}"
         )
         dynamo_run_binary = get_dynamo_run_binary()
         endpoint = f"dyn://{self.frontend_config.endpoint}"

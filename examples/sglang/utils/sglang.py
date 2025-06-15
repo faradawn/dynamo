@@ -45,9 +45,9 @@ def parse_sglang_args(service_name, prefix) -> ServerArgs:
     if not any(
         arg.startswith("--page_size") for arg in sglang_args
     ):
-        logger.info("=== adding page_size to 16")
+        logger.info("=== adding page_size to 64")
         args_dict = vars(args)
-        args_dict["page_size"] = 16 # This should match dynamo's kv_block_size
+        args_dict["page_size"] = 64  # This should match dynamo's kv_block_size
         args = Namespace(**args_dict)
 
     return ServerArgs.from_cli_args(args)

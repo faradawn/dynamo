@@ -32,6 +32,8 @@ Both the indexer and the aggregator communicate with workers over ZMQ, which
 matches the existing SGLang deployment pattern.
 """
 
+# faradawn hello
+
 from __future__ import annotations
 
 import argparse
@@ -122,6 +124,7 @@ class Router:
     def __init__(self):
         logger.info("Initializing Custom KV Router for SGLang")
         self.args = parse_args(self.__class__.__name__, "")
+        logger.info("=== Router args: %s", self.args)
 
         # Default metric values when data is unavailable
         self.default_metrics = {
@@ -175,6 +178,7 @@ class Router:
 
         Returns a tuple of ``(worker_id, estimated_prefix_hit_rate)``.
         """
+        logger.info("=== Cost function called")
 
         worker_scores: dict[WorkerId, float] = {}
         if scores:
@@ -276,6 +280,7 @@ class Router:
     @endpoint()
     async def generate(self, request: Tokens) -> AsyncIterator[Tuple[WorkerId, float]]:
         """Determine the best worker for the given request tokens."""
+        logger.info("=== Generate called")
         # Pull latest metrics snapshot
         metrics = await self.metrics_aggregator.get_metrics()
 
