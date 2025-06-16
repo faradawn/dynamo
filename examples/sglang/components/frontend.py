@@ -68,11 +68,14 @@ class Frontend:
 
     def start_ingress_and_processor(self):
         """Starting dynamo-run based ingress and processor"""
+        logger.info(f"=== start_ingress_and_processor, in port {self.frontend_config.port}, out endpoint: {self.frontend_config.endpoint}") # TODO changed from generate
         logger.info(
             f"Starting HTTP server and processor on port {self.frontend_config.port}"
         )
         dynamo_run_binary = get_dynamo_run_binary()
         endpoint = f"dyn://{self.frontend_config.endpoint}"
+
+        logger.info(f"=== start_ingress_and_processor, in port {self.frontend_config.port}, out endpoint: {endpoint}")
 
         self.process = subprocess.Popen(
             [

@@ -14,8 +14,8 @@
 # limitations under the License.
 Frontend:
   served_model_name: deepseek-ai/DeepSeek-R1-Distill-Llama-8B
-  endpoint: dynamo.SGLangWorker.generate
-  port: 8000
+  endpoint: dynamo.SGLangWorker.chat/completions
+  port: 1234
 
 SGLangWorker:
   model-path: deepseek-ai/DeepSeek-R1-Distill-Llama-8B

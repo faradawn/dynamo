@@ -56,14 +56,15 @@ class SGLangWorker:
         self.engine_args = parse_sglang_args(class_name, "")
         self.engine = sgl.Engine(server_args=self.engine_args)
 
-        logger.info("SGLangWorker initialized")
+        logger.info("=== __init__ : SGLangWorker initialized")
 
     @async_on_start
     async def async_init(self):
         runtime = dynamo_context["runtime"]
         logger.info("Registering LLM for discovery")
         comp_ns, comp_name = SGLangWorker.dynamo_address()  # type: ignore
-        endpoint = runtime.namespace(comp_ns).component(comp_name).endpoint("generate")
+        logger.info(f"=== async init : {comp_ns} {comp_name}")
+        endpoint = runtime.namespace(comp_ns).component(comp_name).endpoint("chat/completions") # TODO changed from generate
         await register_llm(
             ModelType.Backend,
             endpoint,
@@ -112,8 +113,9 @@ class SGLangWorker:
             sampling_params["ignore_eos"] = request.stop_conditions.ignore_eos
         return sampling_params
 
-    @endpoint()
+    @endpoint(name="chat/completions")
     async def generate(self, request: PreprocessedRequest):
+        logger.info(f"worker: generate: Received request: {request}")
         # TODO: maintain a mapping from SGLang's Ouput struct to LLMEngineOuput
         sampling_params = self._build_sampling_params(request)
 
