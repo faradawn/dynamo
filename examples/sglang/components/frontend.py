@@ -25,10 +25,6 @@ import dynamo.sdk as sdk
 from dynamo.sdk import depends, service
 from dynamo.sdk.lib.config import ServiceConfig
 from dynamo.sdk.lib.image import DYNAMO_IMAGE
-from dynamo.sdk import endpoint, on_shutdown
-from components.kv_router import Router
-from utils.protocol import PreprocessedRequest
-from typing import AsyncIterator
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +57,6 @@ class FrontendConfig(BaseModel):
 )
 class Frontend:
     worker = depends(SGLangWorker)
-    router = depends(Router)
 
     def __init__(self):
         """Initialize Frontend service with HTTP server and model configuration."""
@@ -79,8 +74,6 @@ class Frontend:
         dynamo_run_binary = get_dynamo_run_binary()
         endpoint = f"dyn://{self.frontend_config.endpoint}"
 
-        logger.info(f"=== frontend: start_ingress_and_processor: dynamo-run with endpoint: {endpoint}")
-
         self.process = subprocess.Popen(
             [
                 dynamo_run_binary,
@@ -88,22 +81,8 @@ class Frontend:
                 f"out={endpoint}",
                 "--http-port",
                 str(self.frontend_config.port),
+                "--router-mode", "kv",
             ],
             stdout=None,
             stderr=None,
         )
-
-    @endpoint(name="chat/completions")
-    async def chat_completions(self, request_dict: PreprocessedRequest) -> AsyncIterator[str]:
-        """
-        Handle chat completions requests (routed from HTTP via llmctl).
-        This combines the logic of vLLM's Processor since SGLang has no separate Processor.
-        """
-        logger.info(f"=== frontend: received parsed request {request_dict}")
-        worker_generator = await self.worker_client.generate(request_dict)
-        
-            
-        # Stream response from worker
-        async for response in worker_generator:
-            yield response.data()
-

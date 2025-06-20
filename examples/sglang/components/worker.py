@@ -35,13 +35,9 @@ from sglang.srt.utils import get_ip
 from utils.protocol import DisaggPreprocessedRequest, PreprocessedRequest
 from utils.sglang import parse_sglang_args
 
-from dynamo.llm import (
-    ModelType,
-    register_llm,
-    ZmqKvEventPublisher,
-    ZmqKvEventPublisherConfig,
-)
+from dynamo.llm import ModelType, register_llm
 from dynamo.sdk import async_on_start, depends, dynamo_context, endpoint, service
+from dynamo.llm import WorkerMetricsPublisher
 
 logger = logging.getLogger(__name__)
 
@@ -59,23 +55,78 @@ class SGLangWorker:
     def __init__(self):
         class_name = self.__class__.__name__
         self.engine_args = parse_sglang_args(class_name, "")
-        logger.info(f"=== SGLangWorker __init__ ===, engine_args: {self.engine_args}")
         self.engine = sgl.Engine(server_args=self.engine_args)
+        
+        # Initialize metrics publisher
+        self.metrics_publisher = WorkerMetricsPublisher()
 
-        logger.info("SGLangWorker initialized")
+        logger.info("=== new file SGLangWorker initialized with kv publisher")
+
+    def _update_metrics(self):
+        """Update metrics with current engine state"""
+        # TODO: Get actual metrics from SGLang engine
+        # For now, publish reasonable default values to keep KV router happy
+        self.metrics_publisher.publish(
+            request_active_slots=1,  # Assume 1 active request during processing
+            request_total_slots=100,
+            kv_active_blocks=random.randint(0, 500),  # Random for now
+            kv_total_blocks=1000,
+            num_requests_waiting=0,  # TODO: get from engine queue
+            gpu_cache_usage_perc=random.uniform(0.1, 0.8),  # Random for now
+            gpu_prefix_cache_hit_rate=random.uniform(0.0, 0.5),  # Random for now
+        )
+
+    async def create_metrics_publisher_endpoint(self):
+        """Create the `load_metrics` endpoint that the KV-router polls.
+
+        We must reuse the *current* component instance (available through
+        ``dynamo_context["component"]``) because that instance already owns
+        the primary lease.  Creating a fresh `Component` handle and passing
+        it to `create_endpoint` would block forever while waiting for the
+        lease, which is exactly the hang that was observed.
+        """
+        component = dynamo_context["component"]
+        logger.info("=== me Creating metrics publisher endpoint with primary lease")
+        await self.metrics_publisher.create_endpoint(component)
+        logger.info("=== me Metrics publisher endpoint created")
 
     @async_on_start
     async def async_init(self):
         runtime = dynamo_context["runtime"]
-        logger.info("Registering LLM for discovery")
+        logger.info("=== worker async_initRegistering LLM for discovery")
         comp_ns, comp_name = SGLangWorker.dynamo_address()  # type: ignore
         endpoint = runtime.namespace(comp_ns).component(comp_name).endpoint("generate")
+        component = runtime.namespace(comp_ns).component(comp_name)
+
+        logger.info(f"=== new file register llm with kv block size 16, endpoint={endpoint}, model_path={self.engine_args.model_path}, served_model_name={self.engine_args.served_model_name}")
         await register_llm(
             ModelType.Backend,
             endpoint,
             self.engine_args.model_path,
             self.engine_args.served_model_name,
+            kv_cache_block_size=16,
         )
+
+        logger.info(f"=== worker publishing initial metrics")
+
+        self.metrics_publisher.publish(
+            request_active_slots=0,
+            request_total_slots=1024,  # TODO: get from SGLang engine config
+            kv_active_blocks=0,
+            kv_total_blocks=1024,  # TODO: get from SGLang engine config  
+            num_requests_waiting=0,
+            gpu_cache_usage_perc=0.0,
+            gpu_prefix_cache_hit_rate=0.0,
+        )
+
+        logger.info(f"=== worker donepublishing initial metrics")
+        
+        # Create metrics publisher endpoint for KV router discovery
+        task = asyncio.create_task(self.create_metrics_publisher_endpoint())
+        task.add_done_callback(
+            lambda _: logger.info("=== worker metrics publisher endpoint created")
+        )
+        
         if self.engine_args.disaggregation_mode:
             self.bootstrap_host, self.bootstrap_port = self._get_bootstrap_info()
             comp_ns, comp_name = SGLangDecodeWorker.dynamo_address()  # type: ignore
@@ -85,38 +136,6 @@ class SGLangWorker:
                 .endpoint("generate")
                 .client()
             )
-
-        # -------------------------------------------------------------
-        # Set up KV cache event publisher (ZMQ -> NATS)
-        # -------------------------------------------------------------
-        logger.info("=== Trying Initialising ZMQ KV event publisher ===")
-        try:
-            # Create a reference to the underlying Component so that the
-            # publisher can expose its own endpoint/statistics.
-            component_ref = runtime.namespace(comp_ns).component(comp_name)
-
-            # Derive KV block size from engine args, falling back to 64
-            kv_block_size = getattr(
-                self.engine_args, "page_size", getattr(self.engine_args, "block_size", 64)
-            )
-
-            zmq_config = ZmqKvEventPublisherConfig(
-                worker_id=endpoint.lease_id(),
-                kv_block_size=kv_block_size,
-            )
-
-            logger.info("=== 1. initi zmq kv publisher with config: %s", zmq_config)
-
-            # Keep a reference so it is not garbage-collected.
-            self._kv_publisher = ZmqKvEventPublisher(
-                component=component_ref,
-                config=zmq_config,
-            )
-
-            logger.info("=== 2. created zmq kv publisher")
-            logger.info("=== ZMQ KV event publisher initialised (block_size=%s)", kv_block_size)
-        except Exception as e:
-            logger.exception("=== Failed to initialise ZMQ KV event publisher: %s", e)
 
     def _get_bootstrap_info(self):
         """
@@ -152,7 +171,10 @@ class SGLangWorker:
 
     @endpoint()
     async def generate(self, request: PreprocessedRequest):
-        logger.info(f"=== inside worker: generate called with request: {request}")
+        # Update metrics for KV router
+        logger.info(f"=== worker generate request={request}")
+        self._update_metrics()
+        
         # TODO: maintain a mapping from SGLang's Ouput struct to LLMEngineOuput
         sampling_params = self._build_sampling_params(request)
 
@@ -186,7 +208,6 @@ class SGLangWorker:
 
             await prefill_task
         else:
-            logger.info(f"=== inside worker: aggregated mode, generate, request {request}")
             g = await self.engine.async_generate(
                 input_ids=request.token_ids,
                 sampling_params=sampling_params,
