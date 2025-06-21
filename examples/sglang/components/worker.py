@@ -35,9 +35,14 @@ from sglang.srt.utils import get_ip
 from utils.protocol import DisaggPreprocessedRequest, PreprocessedRequest
 from utils.sglang import parse_sglang_args
 
-from dynamo.llm import ModelType, register_llm
+from dynamo.llm import (
+    ModelType,
+    register_llm,
+    WorkerMetricsPublisher,
+    ZmqKvEventPublisher,
+    ZmqKvEventPublisherConfig,
+)
 from dynamo.sdk import async_on_start, depends, dynamo_context, endpoint, service
-from dynamo.llm import WorkerMetricsPublisher
 
 logger = logging.getLogger(__name__)
 
@@ -104,7 +109,7 @@ class SGLangWorker:
             endpoint,
             self.engine_args.model_path,
             self.engine_args.served_model_name,
-            kv_cache_block_size=16,
+            kv_cache_block_size=self.engine_args.page_size,
         )
 
         logger.info(f"=== worker publishing initial metrics")
@@ -136,6 +141,22 @@ class SGLangWorker:
                 .endpoint("generate")
                 .client()
             )
+
+        # Configure ZMQ KV Event Publisher to relay KV events from SGLang to NATS
+        # The worker_id is set to the current lease ID so that the router can
+        # attribute KV-events to the correct backend worker.
+        zmq_config = ZmqKvEventPublisherConfig(
+            worker_id=endpoint.lease_id(),
+            kv_block_size=self.engine_args.page_size,  # Keep in sync with register_llm above
+        )
+
+        # Keep a reference on the instance to avoid the publisher being garbage-collected.
+        self._kv_event_publisher = ZmqKvEventPublisher(
+            component=component,
+            config=zmq_config,
+        )
+
+        logger.info("=== worker ZMQ publisher created")
 
     def _get_bootstrap_info(self):
         """
