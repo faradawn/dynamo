@@ -71,6 +71,13 @@ cd /workspace/examples/sglang
 dynamo serve graphs.agg:Frontend -f ./configs/agg.yaml
 ```
 
+#### Aggregated with router
+
+```bash
+cd /workspace/examples/sglang
+dynamo serve graphs.agg:Frontend -f ./configs/agg.yaml --Frontend.router=kv
+```
+
 #### Disaggregated
 
 SGLang uses a mini load balancer to route requests to handle disaggregated serving. The load balancer functions as follows
