@@ -67,16 +67,18 @@ class SGLangWorker:
 
     def _update_metrics(self):
         """Update metrics with current engine state"""
-        # TODO: Get actual metrics from SGLang engine
-        # For now, publish reasonable default values to keep KV router happy
+        # TODO(dynamo): Replace these placeholders with real engine metrics once the
+        # upstream changes are merged. See:
+        #   • ai-dynamo/dynamo#1465 – "feat: receive kvmetrics from sglang scheduler"
+        #   • sgl-project/sglang#6721 – "Expose runtime KV-cache & request metrics"
         self.metrics_publisher.publish(
-            request_active_slots=1,  # Assume 1 active request during processing
+            request_active_slots=1,
             request_total_slots=100,
-            kv_active_blocks=random.randint(0, 500),  # Random for now
+            kv_active_blocks=random.randint(0, 500),
             kv_total_blocks=1000,
-            num_requests_waiting=0,  # TODO: get from engine queue
-            gpu_cache_usage_perc=random.uniform(0.1, 0.8),  # Random for now
-            gpu_prefix_cache_hit_rate=random.uniform(0.0, 0.5),  # Random for now
+            num_requests_waiting=0,
+            gpu_cache_usage_perc=random.uniform(0.1, 0.8),
+            gpu_prefix_cache_hit_rate=random.uniform(0.0, 0.5),
         )
 
     async def create_metrics_publisher_endpoint(self):
@@ -103,9 +105,9 @@ class SGLangWorker:
 
         self.metrics_publisher.publish(
             request_active_slots=0,
-            request_total_slots=1024,  # TODO: get from SGLang engine config
+            request_total_slots=1024,
             kv_active_blocks=0,
-            kv_total_blocks=1024,  # TODO: get from SGLang engine config
+            kv_total_blocks=1024,
             num_requests_waiting=0,
             gpu_cache_usage_perc=0.0,
             gpu_prefix_cache_hit_rate=0.0,
@@ -155,7 +157,6 @@ class SGLangWorker:
         return bootstrap_host, bootstrap_port
 
     def _build_sampling_params(self, request: PreprocessedRequest) -> dict:
-        # TODO: maintain a full mapping from PreprocessedRequest to SGLang's SamplingParams
         sampling_params = {}
         if request.sampling_options.temperature:
             sampling_params["temperature"] = request.sampling_options.temperature
@@ -171,8 +172,6 @@ class SGLangWorker:
     @endpoint()
     async def generate(self, request: PreprocessedRequest):
         self._update_metrics()
-
-        # TODO: maintain a mapping from SGLang's Ouput struct to LLMEngineOuput
         sampling_params = self._build_sampling_params(request)
 
         if self.engine_args.disaggregation_mode != "null":
