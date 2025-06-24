@@ -67,10 +67,12 @@ class SGLangWorker:
 
     def _update_metrics(self):
         """Update metrics with current engine state"""
-        # TODO(dynamo): Replace these placeholders with real engine metrics once the
-        # upstream changes are merged. See:
+        # TODO: remove this once the following upstream changes are merged:
         #   • ai-dynamo/dynamo#1465 – "feat: receive kvmetrics from sglang scheduler"
         #   • sgl-project/sglang#6721 – "Expose runtime KV-cache & request metrics"
+        logger.warning(
+            "Publishing placeholder metrics in SGLangWorker; these are NOT real engine metrics yet and will be replaced once upstream support lands."
+        )
         self.metrics_publisher.publish(
             request_active_slots=1,
             request_total_slots=100,
