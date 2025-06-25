@@ -134,9 +134,8 @@ RUN if [ "$ARCH" = "arm64" ]; then \
     fi
 
 # Install sglang
-# Once either 0.4.6post6 or 0.4.7 is released, we can switch back to using the published version
-# This commit adds ZMQ KV event publisher inside sglang: https://github.com/sgl-project/sglang/pull/68244
-ARG SGLANG_COMMIT="777688b8929c877e4e28c2eac208d776abe4c3af"
+# Pinning to v0.4.8 release, which includes KV event publishing within sglang: https://github.com/sgl-project/sglang/releases/tag/v0.4.8
+ARG SGLANG_COMMIT="7c3a12c0002e33fed1e72f4157e74a64a998f251"
 RUN --mount=type=cache,target=/root/.cache/uv \
     git clone https://github.com/sgl-project/sglang.git && \
     cd sglang && \
