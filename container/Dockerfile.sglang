@@ -134,13 +134,16 @@ RUN if [ "$ARCH" = "arm64" ]; then \
     fi
 
 # Install sglang
-# Pinning to v0.4.8 release, which includes KV event publishing within sglang: https://github.com/sgl-project/sglang/releases/tag/v0.4.8
-ARG SGLANG_COMMIT="7c3a12c0002e33fed1e72f4157e74a64a998f251"
+# This commit references a NIXL fix that was releasted after the 0.4.8.post1 release https://github.com/sgl-project/sglang/pull/7330
+ARG SGLANG_COMMIT="bb9b608c86ebad7d9d01e29fe058bc184dc7285f"
 RUN --mount=type=cache,target=/root/.cache/uv \
     git clone https://github.com/sgl-project/sglang.git && \
     cd sglang && \
     git checkout ${SGLANG_COMMIT} && \
     uv pip install -e "python[all]"
+
+# Set env var that allows for forceful shutdown of inflight requests in SGL's TokenizerManager
+ENV SGL_FORCE_SHUTDOWN=1
 
 # Common dependencies
 RUN --mount=type=bind,source=./container/deps/requirements.txt,target=/tmp/requirements.txt \
