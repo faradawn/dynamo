@@ -1,0 +1,230 @@
+{
+  "request_throughput": {
+    "unit": "requests/sec",
+    "avg": 0.8224385363557982
+  },
+  "request_latency": {
+    "unit": "ms",
+    "avg": 4861.99941425,
+    "p25": 4516.485315,
+    "p50": 4890.3513795,
+    "p75": 4923.5567654999995,
+    "p90": 5087.858360700002,
+    "p95": 5923.1648767,
+    "p99": 5925.02443864,
+    "min": 4480.146001,
+    "max": 5925.663229,
+    "std": 403.1128660003042
+  },
+  "request_count": {
+    "unit": "count",
+    "avg": 40.0
+  },
+  "time_to_first_token": {
+    "unit": "ms",
+    "avg": 291.26161227499995,
+    "p25": 143.17099625,
+    "p50": 155.295763,
+    "p75": 553.5169394999999,
+    "p90": 561.9019772999999,
+    "p95": 567.23187865,
+    "p99": 573.77866051,
+    "min": 93.397959,
+    "max": 574.006534,
+    "std": 195.32634633821058
+  },
+  "time_to_second_token": {
+    "unit": "ms",
+    "avg": 91.99253445,
+    "p25": 29.15853525,
+    "p50": 30.737460499999997,
+    "p75": 72.4702085,
+    "p90": 284.8913755,
+    "p95": 419.14756504999997,
+    "p99": 419.51955679,
+    "min": 27.551807999999998,
+    "max": 419.71153,
+    "std": 119.58495921070912
+  },
+  "inter_token_latency": {
+    "unit": "ms",
+    "avg": 30.676092649999998,
+    "p25": 29.2841685,
+    "p50": 29.606291499999998,
+    "p75": 30.62856025,
+    "p90": 33.057930500000005,
+    "p95": 38.7850319,
+    "p99": 39.06308178,
+    "min": 28.939607,
+    "max": 39.066669,
+    "std": 2.862614671185292
+  },
+  "output_token_throughput": {
+    "unit": "tokens/sec",
+    "avg": 123.36578045336974
+  },
+  "output_token_throughput_per_user": {
+    "unit": "tokens/sec/user",
+    "avg": 32.83460581366903,
+    "p25": 32.64926568901471,
+    "p50": 33.776604785759645,
+    "p75": 34.14822570374017,
+    "p90": 34.38459903939981,
+    "p95": 34.40518369069305,
+    "p99": 34.54957339069284,
+    "min": 25.59726809572631,
+    "max": 34.55471941965211,
+    "std": 2.5338160270030476
+  },
+  "output_sequence_length": {
+    "unit": "tokens",
+    "avg": 150.0,
+    "p25": 150.0,
+    "p50": 150.0,
+    "p75": 150.0,
+    "p90": 150.0,
+    "p95": 150.0,
+    "p99": 150.0,
+    "min": 150.0,
+    "max": 150.0,
+    "std": 0.0
+  },
+  "input_sequence_length": {
+    "unit": "tokens",
+    "avg": 3000.0,
+    "p25": 3000.0,
+    "p50": 3000.0,
+    "p75": 3000.0,
+    "p90": 3000.0,
+    "p95": 3000.0,
+    "p99": 3000.0,
+    "min": 3000.0,
+    "max": 3000.0,
+    "std": 0.0
+  },
+  "input_config": {
+    "model_names": [
+      "Qwen/Qwen3-0.6B"
+    ],
+    "subcommand": "profile",
+    "verbose": false,
+    "template_filename": "genai_perf_config.yaml",
+    "analyze": {
+      "sweep_parameters": {
+        "concurrency": {
+          "min": 1,
+          "max": 1024
+        }
+      }
+    },
+    "endpoint": {
+      "model_selection_strategy": "round_robin",
+      "backend": "tensorrtllm",
+      "custom": "v1/chat/completions",
+      "type": "chat",
+      "streaming": true,
+      "server_metrics_urls": [
+        "http://localhost:8002/metrics"
+      ],
+      "url": "http://localhost:8000",
+      "grpc_method": "",
+      "service_kind": "openai",
+      "output_format": "openai_chat_completions"
+    },
+    "perf_analyzer": {
+      "path": "perf_analyzer",
+      "verbose": false,
+      "stimulus": {
+        "concurrency": 4
+      },
+      "stability_percentage": 999,
+      "measurement": {
+        "mode": "request_count",
+        "num": 40
+      },
+      "warmup_request_count": 8
+    },
+    "input": {
+      "batch_size": 1,
+      "extra": {
+        "max_tokens": 150,
+        "min_tokens": 150,
+        "ignore_eos": true,
+        "nvext": {
+          "ignore_eos": true
+        }
+      },
+      "goodput": "",
+      "header": "",
+      "file": "",
+      "num_dataset_entries": 48,
+      "random_seed": 100,
+      "audio": {
+        "batch_size": 1,
+        "length": {
+          "mean": 0,
+          "stddev": 0
+        },
+        "format": "wav",
+        "depths": [
+          16
+        ],
+        "sample_rates": [
+          16
+        ],
+        "num_channels": 1
+      },
+      "image": {
+        "width": {
+          "mean": 0,
+          "stddev": 0
+        },
+        "height": {
+          "mean": 0,
+          "stddev": 0
+        },
+        "batch_size": 1,
+        "format": "png"
+      },
+      "output_tokens": {
+        "mean": 150,
+        "deterministic": false,
+        "stddev": 0
+      },
+      "synthetic_tokens": {
+        "mean": 3000,
+        "stddev": 0
+      },
+      "prefix_prompt": {
+        "num": 0,
+        "length": 100
+      },
+      "sessions": {
+        "num": 0,
+        "turns": {
+          "mean": 1,
+          "stddev": 0
+        },
+        "turn_delay": {
+          "mean": 0,
+          "ratio": 1.0,
+          "stddev": 0
+        }
+      },
+      "prompt_source": "synthetic",
+      "synthetic_files": [],
+      "payload_file": ""
+    },
+    "output": {
+      "artifact_directory": "artifacts_root/artifacts_2",
+      "checkpoint_directory": "checkpoint",
+      "profile_export_file": "profile_export.json",
+      "generate_plots": false
+    },
+    "tokenizer": {
+      "name": "Qwen/Qwen3-0.6B",
+      "revision": "main",
+      "trust_remote_code": false
+    }
+  }
+}

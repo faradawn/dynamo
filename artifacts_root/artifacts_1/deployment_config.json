@@ -1,0 +1,13 @@
+{
+  "kind": "dynamo",
+  "model": "Qwen/Qwen3-0.6B",
+  "input_sequence_length": 128,
+  "output_sequence_length": 32,
+  "tensor_parallelism": 1,
+  "data_parallelism": 1,
+  "prefill_tensor_parallelism": 0,
+  "prefill_data_parallelism": 0,
+  "decode_tensor_parallelism": 0,
+  "decode_data_parallelism": 0,
+  "mode": "aggregated"
+}

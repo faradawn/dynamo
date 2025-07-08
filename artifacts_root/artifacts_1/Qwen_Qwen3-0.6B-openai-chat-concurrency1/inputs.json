@@ -1,0 +1,244 @@
+{
+  "data": [
+    {
+      "payload": [
+        {
+          "model": "Qwen/Qwen3-0.6B",
+          "messages": [
+            {
+              "role": "user",
+              "content": " diadem upon his head Whose churchlike humours fits not for a crown Then York be still awhile till time do serve Watch thou and wake when others be asleep To pry into the secrets of the state Till Henry surfeiting in joys of love With his new bride and Englands dearbought Queen And Humphrey with the peers be fallen at jars Then will I raise aloft the milkwhite rose With whose sweet smell the air shall be perfumed And in my standard bear the arms of York To grapple with the house of Lancaster And force perforce Ill make him yield the crown Whose bookish rule hath pulled fair England down"
+            }
+          ],
+          "stream": true,
+          "max_tokens": 32,
+          "min_tokens": 32,
+          "ignore_eos": true,
+          "nvext": {
+            "ignore_eos": true
+          }
+        }
+      ]
+    },
+    {
+      "payload": [
+        {
+          "model": "Qwen/Qwen3-0.6B",
+          "messages": [
+            {
+              "role": "user",
+              "content": " carrying the nobles Rivers Grey and Vaughan to death at Pomfret RIVERS Sir Richard Ratcliffe let me tell thee this Today shalt thou behold a subject die For truth for duty and for loyalty GREY God bless the Prince from all the pack of you A knot you are of damned bloodsuckers VAUGHAN You live that shall cry woe for this hereafter RATCLIFFE Dispatch The limit of your lives is out RIVERS O Pomfret Pomfret O thou bloody prison Fatal and ominous to noble peers Within the guilty closure of thy walls Richard the Second here was hacked to death And for more slander to thy dismal"
+            }
+          ],
+          "stream": true,
+          "max_tokens": 32,
+          "min_tokens": 32,
+          "ignore_eos": true,
+          "nvext": {
+            "ignore_eos": true
+          }
+        }
+      ]
+    },
+    {
+      "payload": [
+        {
+          "model": "Qwen/Qwen3-0.6B",
+          "messages": [
+            {
+              "role": "user",
+              "content": " I am set naked on your kingdom Tomorrow shall I beg leave to see your kingly eyes When I shall first asking your pardon thereunto recount the occasions of my sudden and more strange return HAMLET What should this mean Are all the rest come back Or is it some abuse and no such thing LAERTES Know you the hand KING Tis Hamlets character Naked And in a postscript here he says alone Can you advise me LAERTES I am lost in it my lord But let him come It warms the very sickness in my heart That I shall live and tell him to his teeth Thus diest thou KING If it be so"
+            }
+          ],
+          "stream": true,
+          "max_tokens": 32,
+          "min_tokens": 32,
+          "ignore_eos": true,
+          "nvext": {
+            "ignore_eos": true
+          }
+        }
+      ]
+    },
+    {
+      "payload": [
+        {
+          "model": "Qwen/Qwen3-0.6B",
+          "messages": [
+            {
+              "role": "user",
+              "content": " had selfapplied Love to myself and to no love beside But woe is me Too early I attended A youthful suit it was to gain my grace O one by natures outwards so commended That maidens eyes stuck over all his face Love lackd a dwelling and made him her place And when in his fair parts she did abide She was new lodgd and newly deified His browny locks did hang in crooked curls And every light occasion of the wind Upon his lips their silken parcels hurls Whats sweet to do to do will aptly find Each eye that saw him did enchant the mind For on his visage was"
+            }
+          ],
+          "stream": true,
+          "max_tokens": 32,
+          "min_tokens": 32,
+          "ignore_eos": true,
+          "nvext": {
+            "ignore_eos": true
+          }
+        }
+      ]
+    },
+    {
+      "payload": [
+        {
+          "model": "Qwen/Qwen3-0.6B",
+          "messages": [
+            {
+              "role": "user",
+              "content": " God comfort thy capacity I say th allusion holds in the exchange DULL And I say the pollution holds in the exchange for the moon is never but a month old and I say beside that twas a pricket that the Princess killed HOLOFERNES Sir Nathaniel will you hear an extemporal epitaph on the death of the deer And to humour the ignorant call I the deer the Princess killed a pricket NATHANIEL Perge good Master Holofernes perge so it shall please you to abrogate scurrility HOLOFERNES I will something affect the letter for it argues facility The preyful"
+            }
+          ],
+          "stream": true,
+          "max_tokens": 32,
+          "min_tokens": 32,
+          "ignore_eos": true,
+          "nvext": {
+            "ignore_eos": true
+          }
+        }
+      ]
+    },
+    {
+      "payload": [
+        {
+          "model": "Qwen/Qwen3-0.6B",
+          "messages": [
+            {
+              "role": "user",
+              "content": " is a pretty youthnot very pretty But sure hes proud and yet his pride becomes him Hell make a proper man The best thing in him Is his complexion and faster than his tongue Did make offence his eye did heal it up He is not very tall yet for his years hes tall His leg is but soso and yet tis well There was a pretty redness in his lip A little riper and more lusty red Than that mixed in his cheek Twas just the difference Betwixt the constant red and mingled damask There be some women Silvius had they marked him In parcels as I did would have gone near To"
+            }
+          ],
+          "stream": true,
+          "max_tokens": 32,
+          "min_tokens": 32,
+          "ignore_eos": true,
+          "nvext": {
+            "ignore_eos": true
+          }
+        }
+      ]
+    },
+    {
+      "payload": [
+        {
+          "model": "Qwen/Qwen3-0.6B",
+          "messages": [
+            {
+              "role": "user",
+              "content": " for I am sure the Emperor Paid ere he promised whereby his suit was granted Ere it was asked But when the way was made And paved with gold the Emperor thus desired That he would please to alter the Kings course And break the foresaid peace Let the King know As soon he shall by me that thus the Cardinal Does buy and sell his honour as he pleases And for his own advantage NORFOLK I am sorry To hear this of him and could wish he were Something mistaken int BUCKINGHAM No not a syllable I do pronounce him in that very shape He shall appear in proof Enter Brandon a Sergeantatarms before him and"
+            }
+          ],
+          "stream": true,
+          "max_tokens": 32,
+          "min_tokens": 32,
+          "ignore_eos": true,
+          "nvext": {
+            "ignore_eos": true
+          }
+        }
+      ]
+    },
+    {
+      "payload": [
+        {
+          "model": "Qwen/Qwen3-0.6B",
+          "messages": [
+            {
+              "role": "user",
+              "content": " Benedick and Beatrice between the sheet CLAUDIO That LEONATO O she tore the letter into a thousand halfpence railed at herself that she should be so immodest to write to one that she knew would flout her I measure him says she by my own spirit for I should flout him if he writ to me yea though I love him I should CLAUDIO Then down upon her knees she falls weeps sobs beats her heart tears her hair prays curses O sweet Benedick God give me patience LEONATO She doth indeed my daughter says so and the ecstasy hath so much overborne her that my"
+            }
+          ],
+          "stream": true,
+          "max_tokens": 32,
+          "min_tokens": 32,
+          "ignore_eos": true,
+          "nvext": {
+            "ignore_eos": true
+          }
+        }
+      ]
+    },
+    {
+      "payload": [
+        {
+          "model": "Qwen/Qwen3-0.6B",
+          "messages": [
+            {
+              "role": "user",
+              "content": " successors their way nor called upon For high feats done to th crown neither allied To eminent assistants but spiderlike Out of his selfdrawing web he gives us note The force of his own merit makes his way A gift that heaven gives for him which buys A place next to the King ABERGAVENNY I cannot tell What heaven hath given himlet some graver eye Pierce into thatbut I can see his pride Peep through each part of him Whence has he that If not from hell the devil is a niggard Or has given all before and he begins A new hell in himself BUCKINGHAM Why the devil Upon this"
+            }
+          ],
+          "stream": true,
+          "max_tokens": 32,
+          "min_tokens": 32,
+          "ignore_eos": true,
+          "nvext": {
+            "ignore_eos": true
+          }
+        }
+      ]
+    },
+    {
+      "payload": [
+        {
+          "model": "Qwen/Qwen3-0.6B",
+          "messages": [
+            {
+              "role": "user",
+              "content": " be in Henrys hand SUFFOLK Thus droops this lofty pine and hangs his sprays Thus Eleanors pride dies in her youngest days YORK Lords let him goPlease it your majesty This is the day appointed for the combat And ready are the appellant and defendant The armourer and his man to enter the lists So please your highness to behold the fight QUEEN MARGARET Ay good my lord for purposely therefore Left I the court to see this quarrel tried KING HENRY I Gods name see the lists and all things fit Here let them end it and God defend the right YORK I never saw a fellow worse"
+            }
+          ],
+          "stream": true,
+          "max_tokens": 32,
+          "min_tokens": 32,
+          "ignore_eos": true,
+          "nvext": {
+            "ignore_eos": true
+          }
+        }
+      ]
+    },
+    {
+      "payload": [
+        {
+          "model": "Qwen/Qwen3-0.6B",
+          "messages": [
+            {
+              "role": "user",
+              "content": " tell thy dream Disappears PERICLES Celestial Dian goddess argentine I will obey thee Helicanus Reenter Helicanus Lysimachus and Marina HELICANUS Sir PERICLES My purpose was for Tarsus there to strike The inhospitable Cleon but I am For other service first toward Ephesus Turn our blown sails eftsoons Ill tell thee why To Lysimachus Shall we refresh us sir upon your shore And give you gold for such provision As our intents will need LYSIMACHUS Sir with all my heart And when you come ashore I have another suit PERICLES You"
+            }
+          ],
+          "stream": true,
+          "max_tokens": 32,
+          "min_tokens": 32,
+          "ignore_eos": true,
+          "nvext": {
+            "ignore_eos": true
+          }
+        }
+      ]
+    },
+    {
+      "payload": [
+        {
+          "model": "Qwen/Qwen3-0.6B",
+          "messages": [
+            {
+              "role": "user",
+              "content": "d revenge And tot they go like lightning for ere I Could draw to part them was stout Tybalt slain And as he fell did Romeo turn and fly This is the truth or let Benvolio die LADY CAPULET He is a kinsman to the Montague Affection makes him false he speaks not true Some twenty of them fought in this black strife And all those twenty could but kill one life I beg for justice which thou Prince must give Romeo slew Tybalt Romeo must not live PRINCE Romeo slew him he slew Mercutio Who now the price of his dear blood doth owe MONTAGUE"
+            }
+          ],
+          "stream": true,
+          "max_tokens": 32,
+          "min_tokens": 32,
+          "ignore_eos": true,
+          "nvext": {
+            "ignore_eos": true
+          }
+        }
+      ]
+    }
+  ]
+}
