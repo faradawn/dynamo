@@ -5,7 +5,7 @@ SPDX-License-Identifier: Apache-2.0
 
 # Enable SGLang Hierarchical Cache (HiCache)
 
-This guide shows how to enable SGLang's Hierarchical Cache (HiCache) inside Dynamo. 
+This guide shows how to enable SGLang's Hierarchical Cache (HiCache) inside Dynamo.
 
 ## 1) Build and start the SGLang container
 
