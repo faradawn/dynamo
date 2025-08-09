@@ -7,14 +7,7 @@ SPDX-License-Identifier: Apache-2.0
 
 This guide shows how to enable SGLang's Hierarchical Cache (HiCache) inside Dynamo.
 
-## 1) Build and start the SGLang container
-
-```bash
-./container/build.sh --framework sglang
-./container/run.sh -it --framework sglang
-```
-
-## 2) Start the SGLang worker with HiCache enabled
+## 1) Start the SGLang worker with HiCache enabled
 
 ```bash
 python -m dynamo.sglang.worker \
@@ -40,7 +33,7 @@ Then, start the frontend:
 python -m dynamo.frontend --http-port 8000
 ```
 
-## 3) Send a test request
+## 2) Send a test request
 
 ```bash
 curl localhost:8000/v1/chat/completions \
@@ -58,7 +51,7 @@ curl localhost:8000/v1/chat/completions \
   }'
 ```
 
-## 4) (Optional) Benchmarking
+## 3) (Optional) Benchmarking
 
 Run the perf script:
 ```bash
