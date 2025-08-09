@@ -33,7 +33,7 @@ Then, start the frontend:
 python -m dynamo.frontend --http-port 8000
 ```
 
-## 2) Send a test request
+## 2) Send a single request
 
 ```bash
 curl localhost:8000/v1/chat/completions \
